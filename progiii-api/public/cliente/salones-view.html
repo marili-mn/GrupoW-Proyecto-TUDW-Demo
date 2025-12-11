@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ver Salones - Cliente</title>
+    <link rel="stylesheet" href="../styless/main.css">
+</head>
+<body>
+    <script src="../scripts/auth.js"></script>
+    <script src="../scripts/icons.js"></script>
+    <script>
+        // Verificar autenticación y rol de cliente
+        if (!window.auth || !window.auth.isAuthenticated() || !window.auth.isCliente()) {
+            window.location.href = '../login.html';
+        }
+    </script>
+        
+    </script>
+    <script src="../scripts/sidebar.js" defer></script>
+    
+    <nav class="main-nav">
+        <h1>Salones Disponibles</h1>
+    </nav>
+
+    <header>
+        <div class="controls-container">
+            <input 
+                type="text" 
+                id="filter-input" 
+                placeholder="Buscar por título o dirección..." 
+                onkeyup="filterSalones()"
+            >
+        </div>
+    </header>
+
+    <div id="salones-cards-container" class="cards-grid"></div>
+    
+    <p id="no-results" style="display: none; text-align: center; color: gray;">
+        No se encontraron salones que coincidan con la búsqueda.
+    </p>
+
+    <script>
+        const cardsContainer = document.getElementById('salones-cards-container');
+        const filterInput = document.getElementById('filter-input');
+        const noResults = document.getElementById('no-results');
+        let allSalones = [];
+
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('es-AR', {
+                style: 'currency',
+                currency: 'ARS'
+            }).format(amount);
+        }
+
+        // MOCK DATA
+        const MOCK_SALONES = [
+            { titulo: 'Principal', direccion: 'San Lorenzo 1000', capacidad: 250, importe: 95000.00 },
+            { titulo: 'Secundario', direccion: 'San Lorenzo 1000', capacidad: 70, importe: 7000.00 },
+            { titulo: 'Cancha Fútbol 5', direccion: 'Alberdi 300', capacidad: 50, importe: 150000.00 },
+            { titulo: 'Villa Tranquila', direccion: 'los jacarandaes', capacidad: 300, importe: 500000.00 }
+        ];
+
+        async function fetchSalones() {
+            // MODO SUCIO: Bypass fetch
+            allSalones = MOCK_SALONES;
+            renderSalones(allSalones);
+        }
+
+        function renderSalones(salonesToRender) {
+            cardsContainer.innerHTML = '';
+            
+            if (salonesToRender.length === 0) {
+                noResults.style.display = 'block';
+                return;
+            }
+            
+            noResults.style.display = 'none';
+
+            salonesToRender.forEach(salon => {
+                const card = document.createElement('div');
+                card.className = 'salon-card';
+                card.innerHTML = `
+                    <h3 class="card-title">${salon.titulo}</h3>
+                    <p class="card-info"><strong>Dirección:</strong> ${salon.direccion}</p>
+                    <p class="card-info"><strong>Capacidad:</strong> ${salon.capacidad} personas</p>
+                    <p class="card-info"><strong>Importe:</strong> ${formatCurrency(salon.importe)}</p>
+                `;
+                cardsContainer.appendChild(card);
+            });
+        }
+
+        window.filterSalones = function() {
+            const filterText = filterInput.value.toLowerCase();
+            const filtered = allSalones.filter(s => 
+                s.titulo.toLowerCase().includes(filterText) || 
+                s.direccion.toLowerCase().includes(filterText)
+            );
+            renderSalones(filtered);
+        };
+
+        fetchSalones();
+    </script>
+</body>
+</html>
+

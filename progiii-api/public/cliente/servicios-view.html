@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ver Servicios - Cliente</title>
+    <link rel="stylesheet" href="../styless/main.css">
+</head>
+<body>
+    <script src="../scripts/auth.js"></script>
+    <script src="../scripts/icons.js"></script>
+    <script>
+        // Verificar autenticación y rol de cliente
+        if (!window.auth || !window.auth.isAuthenticated() || !window.auth.isCliente()) {
+            window.location.href = '../login.html';
+        }
+    </script>
+    <script src="../scripts/sidebar.js" defer></script>
+    
+    <nav class="main-nav">
+        <h1>Servicios Disponibles</h1>
+    </nav>
+
+    <div class="table-container">
+        <table class="usuarios-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Descripción</th>
+                    <th>Importe</th>
+                </tr>
+            </thead>
+            <tbody id="servicios-body">
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        const serviciosBody = document.getElementById('servicios-body');
+
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('es-AR', {
+                style: 'currency',
+                currency: 'ARS'
+            }).format(amount);
+        }
+
+        // MOCK DATA
+        const MOCK_SERVICIOS = [
+            { servicio_id: 1, descripcion: 'Sonido', importe: 150400.00 },
+            { servicio_id: 2, descripcion: 'Mesa dulce', importe: 25000.00 },
+            { servicio_id: 3, descripcion: 'Tarjetas de invitación', importe: 5000.00 },
+            { servicio_id: 9, descripcion: 'DJ', importe: 23000.00 }
+        ];
+
+        async function fetchServicios() {
+            // MODO SUCIO: Bypass fetch
+            renderServicios(MOCK_SERVICIOS);
+        }
+
+        function renderServicios(servicios) {
+            serviciosBody.innerHTML = '';
+            
+            if (!servicios || servicios.length === 0) {
+                serviciosBody.innerHTML = '<tr><td colspan="3" style="text-align: center; color: gray;">No hay servicios disponibles</td></tr>';
+                return;
+            }
+            
+            servicios.forEach(servicio => {
+                const row = serviciosBody.insertRow();
+                row.insertCell().textContent = servicio.servicio_id;
+                row.insertCell().textContent = servicio.descripcion;
+                row.insertCell().textContent = formatCurrency(servicio.importe);
+            });
+        }
+
+        fetchServicios();
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ver Turnos - Cliente</title>
+    <link rel="stylesheet" href="../styless/main.css">
+</head>
+<body>
+    <script src="../scripts/auth.js"></script>
+    <script src="../scripts/icons.js"></script>
+   <script>
+        // Verificar autenticación y rol de cliente
+        if (!window.auth || !window.auth.isAuthenticated() || !window.auth.isCliente()) {
+            window.location.href = '../login.html';
+        }
+    </script>
+    <script src="../scripts/sidebar.js" defer></script>
+    
+    <nav class="main-nav">
+        <h1>Turnos Disponibles</h1>
+    </nav>
+
+    <div class="table-container">
+        <table class="usuarios-table">
+            <thead>
+                <tr>
+                    <th>Orden</th>
+                    <th>Horario</th>
+                </tr>
+            </thead>
+            <tbody id="turnos-body">
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        const turnosBody = document.getElementById('turnos-body');
+
+        function formatTime(timeString) {
+            if (!timeString) return '-';
+            return timeString.substring(0, 5);
+        }
+
+        // MOCK DATA
+        const MOCK_TURNOS = [
+            { orden: 1, hora_desde: '12:00:00', hora_hasta: '14:00:00' },
+            { orden: 2, hora_desde: '14:00:00', hora_hasta: '17:00:00' },
+            { orden: 4, hora_desde: '20:05:00', hora_hasta: '23:08:00' }
+        ];
+
+        async function fetchTurnos() {
+            // MODO SUCIO: Bypass fetch
+            renderTurnos(MOCK_TURNOS);
+        }
+
+        function renderTurnos(turnos) {
+            turnosBody.innerHTML = '';
+            
+            if (!turnos || turnos.length === 0) {
+                turnosBody.innerHTML = '<tr><td colspan="2" style="text-align: center; color: gray;">No hay turnos disponibles</td></tr>';
+                return;
+            }
+            
+            turnos.forEach(turno => {
+                const row = turnosBody.insertRow();
+                row.insertCell().textContent = turno.orden;
+                row.insertCell().textContent = `${formatTime(turno.hora_desde)} - ${formatTime(turno.hora_hasta)}`;
+            });
+        }
+
+        fetchTurnos();
+    </script>
+</body>
+</html>
+

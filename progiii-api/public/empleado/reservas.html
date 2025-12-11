@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Listar Reservas - Empleado</title>
+    <link rel="stylesheet" href="../styless/main.css">
+</head>
+<body>
+    <script src="../scripts/auth.js"></script>
+    <script src="../scripts/icons.js"></script>
+    
+    <script src="../scripts/sidebar.js" defer></script>
+    <script>
+        // Verificar autenticación y rol de empleado
+        if (!window.auth || !window.auth.isAuthenticated() || !window.auth.isEmpleado()) {
+            window.location.href = '../login.html';
+        }
+    </script>
+    <nav class="main-nav">
+        <h1>Listar Reservas</h1>
+    </nav>
+
+    <header>
+        <div class="controls-container">
+            <input 
+                type="text" 
+                id="filter-input" 
+                placeholder="Buscar por cliente, salón, temática..." 
+                onkeyup="filterReservas()"
+            >
+            <button id="open-add-modal-btn" class="add-btn" style="background-color: #28a745; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; margin-left: 10px;">Crear Nueva Reserva</button>
+        </div>
+    </header>
+
+    <div class="table-container">
+        <table class="usuarios-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Fecha</th>
+                    <th>Cliente</th>
+                    <th>Salón</th>
+                    <th>Turno</th>
+                    <th>Temática</th>
+                    <th>Importe Total</th>
+                    <th>Estado</th>
+                    <th>Creado</th>
+                </tr>
+            </thead>
+            <tbody id="reservas-body">
+            </tbody>
+        </table>
+    </div>
+
+    <p id="no-results" style="display: none; text-align: center; color: gray;">
+        No se encontraron reservas.
+    </p>
+
+    <!-- Modal Detalles -->
+    <div id="details-modal" class="modal">
+        <div class="modal-content" style="max-width: 700px;">
+            <span class="close-button close-details-modal">&times;</span>
+            <h2>Detalles de la Reserva</h2>
+            
+            <div id="reserva-details-view">
+                <p><strong>ID:</strong> <span id="view-id"></span></p>
+                <p><strong>Fecha:</strong> <span id="view-fecha"></span></p>
+                <p><strong>Cliente:</strong> <span id="view-cliente"></span></p>
+                <p><strong>Usuario:</strong> <span id="view-usuario"></span></p>
+                <p><strong>Salón:</strong> <span id="view-salon"></span></p>
+                <p><strong>Dirección:</strong> <span id="view-direccion"></span></p>
+                <p><strong>Turno:</strong> <span id="view-turno"></span></p>
+                <p><strong>Temática:</strong> <span id="view-tematica"></span></p>
+                <p><strong>Importe Salón:</strong> <span id="view-importe-salon"></span></p>
+                <p><strong>Servicios:</strong></p>
+                <ul id="view-servicios" style="margin-left: 20px;"></ul>
+                <p><strong>Importe Total:</strong> <span id="view-importe-total"></span></p>
+                <p><strong>Creado:</strong> <span id="view-creado"></span></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Crear Reserva -->
+    <div id="add-modal" class="modal">
+        <div class="modal-content" style="max-width: 500px;">
+            <span class="close-button close-add-modal">&times;</span>
+            <h2>Nueva Reserva</h2>
+            <form id="add-reserva-form">
+                <div class="form-group" style="margin-bottom: 15px;">
+                    <label>Cliente:</label>
+                    <select id="add-cliente" required style="width: 100%; padding: 8px;">
+                        <option value="4">Oscar Ramirez</option>
+                        <option value="8">Javier Acosta</option>
+                    </select>
+                </div>
+                <div class="form-group" style="margin-bottom: 15px;">
+                    <label>Fecha:</label>
+                    <input type="date" id="add-fecha" required style="width: 100%; padding: 8px;">
+                </div>
+                <div class="form-group" style="margin-bottom: 15px;">
+                    <label>Salón:</label>
+                    <select id="add-salon" required style="width: 100%; padding: 8px;">
+                        <option value="1">Principal</option>
+                        <option value="2">Secundario</option>
+                        <option value="3">Cancha Fútbol 5</option>
+                    </select>
+                </div>
+                <div class="form-group" style="margin-bottom: 15px;">
+                    <label>Turno:</label>
+                    <select id="add-turno" required style="width: 100%; padding: 8px;">
+                        <option value="1">12:00 - 14:00</option>
+                        <option value="2">14:00 - 17:00</option>
+                    </select>
+                </div>
+                <div class="form-group" style="margin-bottom: 15px;">
+                    <label>Temática:</label>
+                    <input type="text" id="add-tematica" placeholder="Ej: Spiderman" style="width: 100%; padding: 8px;">
+                </div>
+                <div class="form-group" style="margin-bottom: 15px;">
+                    <label>Importe Total ($):</label>
+                    <input type="number" id="add-importe" value="100000" style="width: 100%; padding: 8px;">
+                </div>
+                <button type="submit" class="add-btn" style="width: 100%; padding: 10px; background-color: #28a745; color: white; border: none;">Guardar Reserva</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="../scripts/empleado-reservas.js" defer></script>
+</body>
+</html>
+
